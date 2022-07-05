@@ -110,6 +110,11 @@ class OpenidConnectAuthenticationService implements AuthenticationSchemeService 
 
         CatalogueUser user = catalogueUserService.findByEmailAddress(emailAddress)
 
+        if (user?.isDisabled()) {
+            // User is not active, so return null
+            return null
+        }
+
         if (!user) {
             log.info('Creating new user {}', emailAddress)
 
