@@ -24,9 +24,12 @@ import uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.connect.pr
 import uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.connect.rest.transport.AuthorizationResponseParameters
 import uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.connect.token.OpenidConnectToken
 import uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.connect.token.OpenidConnectTokenService
+import uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.connect.BootStrap
 import uk.ac.ox.softeng.maurodatamapper.security.CatalogueUser
 import uk.ac.ox.softeng.maurodatamapper.security.CatalogueUserService
 import uk.ac.ox.softeng.maurodatamapper.security.authentication.AuthenticationSchemeService
+import uk.ac.ox.softeng.maurodatamapper.core.admin.ApiProperty
+import uk.ac.ox.softeng.maurodatamapper.core.admin.ApiPropertyService
 
 import grails.core.GrailsApplication
 import grails.gorm.transactions.Transactional
@@ -51,6 +54,9 @@ class OpenidConnectAuthenticationService implements AuthenticationSchemeService 
 
     CatalogueUserService catalogueUserService
     GrailsApplication grailsApplication
+
+    ApiPropertyService apiPropertyService
+    Map<String, ApiProperty> apiPropertyMap = getRequiredApiProperties()
 
     @Override
     String getName() {
@@ -110,6 +116,12 @@ class OpenidConnectAuthenticationService implements AuthenticationSchemeService 
 
         CatalogueUser user = catalogueUserService.findByEmailAddress(emailAddress)
 
+        Map<String, ApiProperty> apiPropertyMap = getRequiredApiProperties()
+        if (!user && !apiPropertyMap.autoRegisterUserProperty?.value?.toBoolean()) {
+            // User not found, so return null
+            return null
+        }
+
         if (!user) {
             log.info('Creating new user {}', emailAddress)
 
@@ -142,5 +154,12 @@ class OpenidConnectAuthenticationService implements AuthenticationSchemeService 
         openidConnectAccessService.storeTokenDataIntoHttpSession(token,session , timeoutOverride)
 
         user
+    }
+
+    Map<String, ApiProperty> getRequiredApiProperties() {
+        List<ApiProperty> apiPropertyList = ApiProperty.findAllByCategory(BootStrap.OPEN_ID_PROPERTY_CATEGORY)
+        [
+            autoRegisterUserProperty: apiPropertyList.find {it.key == BootStrap.AUTO_REGISTER_USER_KEY}
+        ]
     }
 }
