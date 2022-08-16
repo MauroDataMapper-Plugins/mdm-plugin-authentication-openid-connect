@@ -22,6 +22,7 @@ import uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.connect.pr
 import uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.connect.provider.details.DiscoveryDocumentService
 import uk.ac.ox.softeng.maurodatamapper.security.CatalogueUser
 import uk.ac.ox.softeng.maurodatamapper.security.utils.SecurityDefinition
+import uk.ac.ox.softeng.maurodatamapper.core.admin.ApiProperty
 
 import grails.core.GrailsApplication
 import groovy.util.logging.Slf4j
@@ -35,6 +36,7 @@ import static uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.con
 import static uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.connect.bootstrap.BootstrapModels.buildAndSaveKeycloakProvider
 import static uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.connect.bootstrap.BootstrapModels.buildAndSaveMicrosoftProvider
 import static uk.ac.ox.softeng.maurodatamapper.util.GormUtils.checkAndSave
+import static uk.ac.ox.softeng.maurodatamapper.core.bootstrap.StandardEmailAddress.ADMIN
 
 @Slf4j
 class BootStrap implements SecurityDefinition{
@@ -45,6 +47,9 @@ class BootStrap implements SecurityDefinition{
     MessageSource messageSource
 
     DiscoveryDocumentService discoveryDocumentService
+
+    static final String OPEN_ID_PROPERTY_CATEGORY = 'Open ID Connect Properties'
+    static final String AUTO_REGISTER_USER_KEY = 'auto_register_users'
 
     def init = {servletContext ->
 
@@ -67,6 +72,19 @@ class BootStrap implements SecurityDefinition{
             if (keycloakEnabled && OpenidConnectProvider.countByLabel(KEYCLOAK_OPENID_CONNECT_PROVIDER_NAME) == 0) {
                 buildAndSaveKeycloakProvider(messageSource, openidConnectConfig.keycloak, discoveryDocumentService)
             }
+        }
+
+        ApiProperty.withNewTransaction {
+
+            List<String> existingKeys = ApiProperty.findAllByCategory(OPEN_ID_PROPERTY_CATEGORY).collect{it?.key}
+
+            List<ApiProperty> loaded = [
+                new ApiProperty(key: AUTO_REGISTER_USER_KEY, value: 'true',
+                                createdBy: ADMIN,
+                                category: OPEN_ID_PROPERTY_CATEGORY)]
+
+            // Dont override already loaded values
+            ApiProperty.saveAll(loaded.findAll {!(it.key in existingKeys)})
         }
 
         environments {
