@@ -165,3 +165,208 @@ https://developers.google.com/identity/protocols/oauth2/openid-connect
 Note that refresh token is not sent as the access token has a 51min expiry life and therefore is unlikely to be needed.
 I believe that making any access check request "resets" the expiry counter but this will need to be checked
 It may also be the same for Keycloak with the "reset"
+
+## Development - Mauro and Secure Data Environment (SDE) Keycloak Setup
+The following instructions are for configuring a development environment to use a local Keycloak server with Mauro and the Secure Data Environment (SDE). These instructions are based on all Mauro and SDE web applications running on their default port numbers.
+
+### Setup Keycloak Server
+https://www.keycloak.org/downloads.html <br>
+Download the Server keycloak
+
+Unzip the keycloak file to a local folder. Then go to the `bin` folder. e.g: <br>
+`cd E:\keycloak-24.0.4\bin`
+
+Run key cloak with this command. We want to keep it out of the way of mauro and SDE port numbers so put it on 9009: <br>
+`kc --verbose start-dev --debug 5050 --http-port 9009`
+
+Open a web browser and go to: http://localhost:9009/ <br>
+
+If everything is working as it should be you will be prompted to create a Keycloak administrator account. Create the account. Once created you should be logged into Keycloak and ready to go.
+
+### Setup Mauro client in Keycloak
+Log in to Keycloak as an Administrator <br>
+
+Click on Clients in the main menu on the left (Click the three horizontal lines icon if menu not visible) <br>
+
+Click "Create client" button <br>
+- ClientID: Mauro
+- Name: Mauro
+- Description: Mauro and SDE <br>
+
+Click "Next"
+- Client Authentication: On <br>
+
+Click "Next" <br>
+
+- Root URL: `http://localhost:4200`
+- Home URL: `http://localhost:4200/redirects/open-id-connect-redirect.html`
+- Valid redirectURIs:<br>
+`http://localhost:4200/redirects/open-id-connect-redirect.html` <br>
+`http://localhost:4201/redirects/open-id-connect-redirect.html` <br>
+`http://localhost:8082/oauth/callback/keycloak` <br>
+`http://localhost:8081/oauth/callback/keycloak`
+- Web origins: `http://localhost:4200`
+- Admin URL: `http://localhost:4200` <br>
+
+Click "Save"
+
+### Configure Mauro to use Keycloak
+Log in to Mauro as an administrator (Use a direct login, NOT an Open ID login)
+
+On the user menu select "Open ID Connect"
+
+Click on "Add"
+- Label: Keycloak (This exact wording must be used for the label to link the Mauro and SDE login processing)
+- Image URL: `https://upload.wikimedia.org/wikipedia/commons/2/29/Keycloak_Logo.png?20200311211229`
+- Client ID: Mauro
+- Client Secret: This can be found in Keycloak server by selecting the Mauro client and going to the Credentials tab. Copy the Client Secret and paste it here.
+- Use discovery document for endpoints: True (Ticked)
+- Discovery document URL: `http://localhost:9009/realms/master/.well-known/openid-configuration`
+
+Click "Add Provider"
+ 
+
+### Configure SDE to use Keycloak
+The Open ID connect configuration has to be setup in configuration files that are read when the SDE starts.
+
+In your local checkout of the SDE go to folder `../sde-core/.run`
+
+Edit file `sde-core_admin-api [run].run.xml` and add the following:
+```
+<entry key="OAUTH_KEYCLOAK_ENABLED" value="true" />
+<entry key="OAUTH_KEYCLOAK_CLIENT_ID" value="Mauro" />
+<entry key="OAUTH_KEYCLOAK_CLIENT_SECRET" value="the client secret" />
+<entry key="OAUTH_KEYCLOAK_ISSUER_URL" value="http://localhost:9009/realms/master" />
+```
+"the client secret" can be found in Keycloak server by selecting the Mauro client and going to the Credentials tab. Copy the Client Secret and paste it here.
+
+Save the changes.
+
+Edit file `sde-core_researcher-api [run].run.xml` and update it in exactly the same way as the `sde-core_admin-api [run].run.xml` that you just updated.
+  
+Save the changes.
+
+Restart `admin-api` and `researcher-api` applications
+
+## Create Users
+Only researchers need to have an account in Mauro. You don't need to setup any users in the SDE as these will be automatically created the first time the user logs in.
+
+### Create a Research User in Mauro
+On the user menu select "Manage Users"
+Click "Add"
+Fill in all mandatory fields and set "Choose a Group" to "Explorer Readers". e.g:
+- Email: researcher.one@sdetest.com
+- First name: Researcher
+- Last name: One
+- Choose a Group: Explorer Readers
+
+### Create Admin and Research Users in Keycloak
+Log in to Keycloak Server as an Administrator. ( http://localhost:9009/ )
+
+#### Research User
+First setup a research user. The email address needs to match the one that you setup in Mauro.
+
+Click on "Users" in the menu on the left
+
+Click on "Add user"
+- Email verified: Yes
+- Username: researcher_one
+- Email: researcher.one@sdetest.com
+- First name: Researcher
+- Last name: One
+
+Click "Create"
+
+You should now be on a "User details" page for the user you just created.
+
+Click on "Credentials" tab
+Click on "Set password"
+- Password: password
+- Password confirmation: password
+- Temporary: Off
+
+Click "Save"
+
+Click "Save password"
+
+#### Admin User
+Now create an Admin account
+
+Click on "Users" in the menu on the left
+
+Click on "Add user"
+- Email verified: Yes
+- Username: admin_one
+- Email: admin.one@sdetest.com
+- First name: Admin
+- Last name: One
+
+Click "Create"
+
+You should now be on a "User details" page for the user you just created.
+
+Click on "Credentials" tab
+Click on "Set password"
+- Password: password
+- Password confirmation: password
+- Temporary: Off
+
+Click "Save"
+
+Click "Save password"
+
+### Test logging in to Mauro UI
+Make sure you have Mauro up and running. i.e:
+- mdm-core
+- mdm-ui
+
+In a web browser go to: http://localhost:4200
+
+Click on "Log in"
+
+You should see a "Keycloak" button. Click it.
+
+When prompted sign in as Researcher One.
+- username: researcher_one
+- password: password
+
+If everything is setup correctly then you should now be logged into Mauro.
+
+### Test logging in to SDE Admin
+Make sure you have SDE Admin up and running. i.e:
+- admin-api (sde-core)
+- sde-admin-ui
+
+In a web browser go to: http://localhost:4202
+
+Click on "Log in"
+
+You should see a "Sign in with Keycloak" button. Click it.
+
+When prompted sign in as Researcher One.
+- username: admin_one
+- password: password
+
+If everything is setup correctly then you should now be logged into the SDE.
+
+### Test logging in to Mauro Data Explorer (MDE)
+Make sure you have MDE up and running. i.e:
+- mdm-core
+- researcher-api (sde-core)
+- mdm-explorer
+
+Make sure you are logged out of Keycloak. This is important, because if you are logged in as an SDE administrator you won't be able to login to the MDE. You may need to clear your cookies to achieve this.
+
+In a web browser go to: http://localhost:4201
+
+Click on "Sign in"
+
+You should see a "Sign in with Keycloak" button. Click it.
+
+When prompted sign in as Researcher One.
+- username: researcher_one
+- password: password
+
+If everything is setup correctly then you should now be logged into the MDE.
+
+Click on the "SDE" tab in the top bar. This should load the Secure Data Environment page with no errors. 

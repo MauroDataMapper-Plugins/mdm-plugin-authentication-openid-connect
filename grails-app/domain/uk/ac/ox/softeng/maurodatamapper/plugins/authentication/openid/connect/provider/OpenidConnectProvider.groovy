@@ -17,6 +17,7 @@
  */
 package uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.connect.provider
 
+import org.apache.commons.validator.routines.UrlValidator
 import uk.ac.ox.softeng.maurodatamapper.gorm.constraint.callable.CallableConstraints
 import uk.ac.ox.softeng.maurodatamapper.gorm.constraint.callable.MdmDomainConstraints
 import uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.connect.provider.details.DiscoveryDocument
@@ -46,8 +47,11 @@ class OpenidConnectProvider implements MdmDomain {
     static constraints = {
         CallableConstraints.call(MdmDomainConstraints, delegate)
         label unique: true, blank: false
-        discoveryDocumentUrl blank: false, url: true, nullable: true, validator: {val, obj ->
-            if (obj.standardProvider && !val) return ['default.null.message']
+        discoveryDocumentUrl blank: false, validator: { val, obj ->
+            {
+                if (obj.standardProvider && !val) return ['default.null.message']
+                new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
+            }
         }
         clientId blank: false
         clientSecret blank: false

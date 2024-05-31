@@ -17,6 +17,7 @@
  */
 package uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.connect.provider.details
 
+import org.apache.commons.validator.routines.UrlValidator
 import uk.ac.ox.softeng.maurodatamapper.plugins.authentication.openid.connect.provider.OpenidConnectProvider
 import uk.ac.ox.softeng.maurodatamapper.traits.domain.MdmDomain
 
@@ -35,12 +36,34 @@ class DiscoveryDocument implements MdmDomain{
     ]
 
     static constraints = {
-        issuer blank: false, url: true
-        authorizationEndpoint blank: false, url: true
-        tokenEndpoint blank: false, url: true
-        userinfoEndpoint blank: false, url: true, nullable: true
-        endSessionEndpoint blank: false, url: true, nullable: true
-        jwksUri blank: false, url: true
+        issuer blank: false, validator: { val ->
+            {
+                if (!val) return ['default.null.message']
+                new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
+            }
+        }
+        authorizationEndpoint blank: false, validator: { val ->
+            if (!val) return ['default.null.message']
+            new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
+        }
+        tokenEndpoint blank: false, validator: { val ->
+            {
+                if (!val) return ['default.null.message']
+                new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
+            }
+        }
+        userinfoEndpoint blank: false, validator: { val ->
+            new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
+        }
+        endSessionEndpoint blank: false, validator: { val ->
+            new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
+        }
+        jwksUri blank: false, validator: { val ->
+            {
+                if (!val) return ['default.null.message']
+                new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
+            }
+        }
         path nullable: true
     }
 
