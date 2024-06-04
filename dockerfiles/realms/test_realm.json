@@ -519,7 +519,7 @@
     "alwaysDisplayInConsole" : false,
     "clientAuthenticatorType" : "client-secret",
     "secret" : "4b3b7290-7629-4b88-b310-df256adc8fed",
-    "redirectUris" : [ "https://jenkins.cs.ox.ac.uk/auth", "https://jenkins.cs.ox.ac.uk" ],
+    "redirectUris" : [ "https://jenkins.cs.ox.ac.uk/keycloak", "https://jenkins.cs.ox.ac.uk" ],
     "webOrigins" : [ ],
     "notBefore" : 0,
     "bearerOnly" : false,

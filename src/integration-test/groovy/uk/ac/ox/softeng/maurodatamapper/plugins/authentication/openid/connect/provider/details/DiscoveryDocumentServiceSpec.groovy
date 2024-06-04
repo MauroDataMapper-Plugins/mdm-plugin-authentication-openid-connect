@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2023 University of Oxford and NHS England
+ * Copyright 2020-2024 University of Oxford and NHS England
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,17 +35,17 @@ class DiscoveryDocumentServiceSpec extends BaseIntegrationSpec {
 
     void 'test get keycloak discovery document'(){
         when:
-        Map<String, Object> dd = discoveryDocumentService.loadDiscoveryDocumentMapFromUrl('https://jenkins.cs.ox.ac.uk/auth/realms/test/.well-known/openid-configuration')
+        Map<String, Object> dd = discoveryDocumentService.loadDiscoveryDocumentMapFromUrl('https://jenkins.cs.ox.ac.uk/keycloak/realms/test/.well-known/openid-configuration')
 
         then:
         dd
-        dd.size() == 29
-        dd.issuer == 'https://jenkins.cs.ox.ac.uk/auth/realms/test'
-        dd.authorization_endpoint == 'https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/auth'
-        dd.token_endpoint == 'https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/token'
-        dd.userinfo_endpoint == 'https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/userinfo'
-        dd.end_session_endpoint == 'https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/logout'
-        dd.jwks_uri == 'https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/certs'
+        dd.size() == 54
+        dd.issuer == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test'
+        dd.authorization_endpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/auth'
+        dd.token_endpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/token'
+        dd.userinfo_endpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/userinfo'
+        dd.end_session_endpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/logout'
+        dd.jwks_uri == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/certs'
     }
 
     void 'test get microsoft discovery document'(){
@@ -81,18 +81,18 @@ class DiscoveryDocumentServiceSpec extends BaseIntegrationSpec {
 
     void 'test create discovery document'(){
         given:
-        Map<String, Object> dd = discoveryDocumentService.loadDiscoveryDocumentMapFromUrl('https://jenkins.cs.ox.ac.uk/auth/realms/test/.well-known/openid-configuration')
+        Map<String, Object> dd = discoveryDocumentService.loadDiscoveryDocumentMapFromUrl('https://jenkins.cs.ox.ac.uk/keycloak/realms/test/.well-known/openid-configuration')
 
         when:
         DiscoveryDocument document = discoveryDocumentService.createDiscoveryDocument(dd)
 
         then:
-        document.issuer == 'https://jenkins.cs.ox.ac.uk/auth/realms/test'
-        document.authorizationEndpoint == 'https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/auth'
-        document.tokenEndpoint == 'https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/token'
-        document.userinfoEndpoint == 'https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/userinfo'
-        document.endSessionEndpoint == 'https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/logout'
-        document.jwksUri == 'https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/certs'
+        document.issuer == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test'
+        document.authorizationEndpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/auth'
+        document.tokenEndpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/token'
+        document.userinfoEndpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/userinfo'
+        document.endSessionEndpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/logout'
+        document.jwksUri == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/certs'
     }
 
     @Override
