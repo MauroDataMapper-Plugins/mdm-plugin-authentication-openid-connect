@@ -109,7 +109,7 @@ class OpenidConnectProviderFunctionalSpec extends FunctionalSpec {
   "lastUpdated": "${json-unit.matches:offsetDateTime}",
   "label": "Keycloak",
   "standardProvider": true,
-  "discoveryDocumentUrl": "https://jenkins.cs.ox.ac.uk/auth/realms/test/.well-known/openid-configuration",
+  "discoveryDocumentUrl": "https://jenkins.cs.ox.ac.uk/keycloak/realms/test/.well-known/openid-configuration",
   "clientId": "mdm",
   "clientSecret": "${json-unit.matches:id}",
   "authorizationEndpointParameters": {
@@ -121,12 +121,12 @@ class OpenidConnectProviderFunctionalSpec extends FunctionalSpec {
   "discoveryDocument": {
     "id": "${json-unit.matches:id}",
     "lastUpdated": "${json-unit.matches:offsetDateTime}",
-    "issuer": "https://jenkins.cs.ox.ac.uk/auth/realms/test",
-    "authorizationEndpoint": "https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/auth",
-    "tokenEndpoint": "https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/token",
-    "userinfoEndpoint": "https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/userinfo",
-    "endSessionEndpoint": "https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/logout",
-    "jwksUri": "https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/certs"
+    "issuer": "https://jenkins.cs.ox.ac.uk/keycloak/realms/test",
+    "authorizationEndpoint": "https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/auth",
+    "tokenEndpoint": "https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/token",
+    "userinfoEndpoint": "https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/userinfo",
+    "endSessionEndpoint": "https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/logout",
+    "jwksUri": "https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/certs"
   },
   "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/2/29/Keycloak_Logo.png"
 }'''
@@ -571,7 +571,7 @@ class OpenidConnectProviderFunctionalSpec extends FunctionalSpec {
         authorizationEndpoint = keycloak.authorizationEndpoint
         log.info('Keycloak: {}', authorizationEndpoint)
         assert authorizationEndpoint
-        assert authorizationEndpoint.startsWith('https://jenkins.cs.ox.ac.uk/auth/realms/test/protocol/openid-connect/auth?')
+        assert authorizationEndpoint.startsWith('https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/auth?')
         assert authorizationEndpoint.contains('response_type=code')
         assert authorizationEndpoint.contains('client_id=mdm')
         assert authorizationEndpoint.contains('scope=openid+email')
