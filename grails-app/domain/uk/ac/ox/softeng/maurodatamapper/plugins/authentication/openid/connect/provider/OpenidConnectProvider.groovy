@@ -47,10 +47,10 @@ class OpenidConnectProvider implements MdmDomain {
     static constraints = {
         CallableConstraints.call(MdmDomainConstraints, delegate)
         label unique: true, blank: false
-        discoveryDocumentUrl blank: false, validator: { val, obj ->
+        discoveryDocumentUrl blank: false, nullable: true, validator: {val, obj ->
             {
                 if (obj.standardProvider && !val) return ['default.null.message']
-                new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
+                if (val && !(new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val))) return ['default.invalid.url.message']
             }
         }
         clientId blank: false
