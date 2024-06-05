@@ -37,32 +37,22 @@ class DiscoveryDocument implements MdmDomain{
 
     static constraints = {
         issuer blank: false, validator: { val ->
-            {
-                if (!val) return ['default.null.message']
-                new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
-            }
+            if (!(new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val))) return ['default.invalid.url.message']
         }
         authorizationEndpoint blank: false, validator: { val ->
-            if (!val) return ['default.null.message']
-            new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
+            if (!(new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val))) return ['default.invalid.url.message']
         }
         tokenEndpoint blank: false, validator: { val ->
-            {
-                if (!val) return ['default.null.message']
-                new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
-            }
+            if (!(new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val))) return ['default.invalid.url.message']
         }
-        userinfoEndpoint blank: false, validator: { val ->
-            new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
+        userinfoEndpoint blank: false, nullable: true, validator: { val ->
+            if (val && !(new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val))) return ['default.invalid.url.message']
         }
-        endSessionEndpoint blank: false, validator: { val ->
-            new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
+        endSessionEndpoint blank: false, nullable: true, validator: { val ->
+            if (val && !(new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val))) return ['default.invalid.url.message']
         }
         jwksUri blank: false, validator: { val ->
-            {
-                if (!val) return ['default.null.message']
-                new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val) ?: ['default.invalid.url.message']
-            }
+            if (!(new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val))) return ['default.invalid.url.message']
         }
         path nullable: true
     }
