@@ -59,11 +59,8 @@ jobs:
         build-scan-terms-of-use-agree: "yes"
 
     - name: Setup default http server
-      uses: Eun/http-server-action@v1
-      with:
-        port: 80
-        no-cache: false
-
+      run: |
+        docker run -p 4200:80 -P -d nginxdemos/hello:plain-text
 
     - name: Core gradle info
       run: |

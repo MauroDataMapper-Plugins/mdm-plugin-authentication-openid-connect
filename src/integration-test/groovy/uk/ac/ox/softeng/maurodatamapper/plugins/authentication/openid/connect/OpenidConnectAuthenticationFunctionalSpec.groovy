@@ -648,7 +648,7 @@ https://login.microsoftonline.com/bc88d555-3533-4d23-a99b-9f034c0fe6fe/oauth2/v2
         Map<String, String> authorizeParameters = authoriseEndpoint.toURL().query.split('&').collectEntries {it.split('=')}
 
         // Pull out the nonce
-        String redirectUrl = "http://localhost"
+        String redirectUrl = "http://localhost:4200"
         String authoriseEndpointWithRedirect = "${authoriseEndpoint}&redirect_uri=${URLEncoder.encode(redirectUrl, 'UTF-8')}"
 
         Connection authoriseConnection = Jsoup.connect(authoriseEndpointWithRedirect)
