@@ -620,8 +620,6 @@ https://login.microsoftonline.com/bc88d555-3533-4d23-a99b-9f034c0fe6fe/oauth2/v2
         Connection.Response response = connection.execute()
 
         // Get all the parameters we got back from authenticate
-        System.err.println(response.url())
-        System.err.println(response.url().query)
         Map<String, String> authenticateParameters = response.url().query.split('&').collectEntries {it.split('=')}
         authenticateParameters.openidConnectProviderId = keycloakProvider.id.toString()
         authenticateParameters.redirectUri = documentData.redirectUrl
