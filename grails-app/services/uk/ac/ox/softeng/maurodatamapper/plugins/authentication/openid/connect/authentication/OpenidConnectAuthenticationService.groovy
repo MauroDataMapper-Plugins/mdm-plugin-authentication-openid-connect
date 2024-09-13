@@ -137,7 +137,8 @@ class OpenidConnectAuthenticationService implements AuthenticationSchemeService 
                                                       password: null,
                                                       firstName: userInfoBody.given_name ?: 'Unknown',
                                                       lastName: userInfoBody.family_name ?: 'Unknown',
-                                                      createdBy: "openidConnectAuthentication@${issuerUrl.host}",
+                                                      //createdBy: "openidConnectAuthentication@${issuerUrl.host}",
+                                                      createdBy: "openidConnectAuthentication@maurodata.org",
                                                       pending: false,
                                                       creationMethod: 'OpenID-Connect')
 
