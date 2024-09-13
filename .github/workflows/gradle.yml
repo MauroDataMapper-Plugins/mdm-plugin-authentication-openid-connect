@@ -92,7 +92,7 @@ jobs:
 
     - name: Integration Tests
       run: |
-        ./gradlew -Dgradle.integrationTest=true integrationTest
+        ./gradlew integrationTest
 
     - name: Integration Test Report
       uses: dorny/test-reporter@v1
