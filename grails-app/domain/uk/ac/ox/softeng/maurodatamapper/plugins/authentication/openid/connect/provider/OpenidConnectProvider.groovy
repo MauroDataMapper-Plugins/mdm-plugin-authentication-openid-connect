@@ -84,10 +84,10 @@ class OpenidConnectProvider implements MdmDomain {
     }
 
     def beforeValidate() {
-        authorizationEndpointParameters?.openidConnectProvider = this
-        authorizationEndpointParameters?.createdBy = this.createdBy
-        discoveryDocument?.openidConnectProvider = this
-        discoveryDocument?.createdBy = this.createdBy
+        if (authorizationEndpointParameters?.openidConnectProvider != this) authorizationEndpointParameters?.openidConnectProvider = this
+        if (authorizationEndpointParameters?.createdBy != this.createdBy) authorizationEndpointParameters?.createdBy = this.createdBy
+        if (discoveryDocument?.openidConnectProvider != this) discoveryDocument?.openidConnectProvider = this
+        if (discoveryDocument?.createdBy != this.createdBy) discoveryDocument?.createdBy = this.createdBy
     }
 
     Map<String, String> getAccessTokenRequestParameters(String code, String redirectUri, String sessionState) {
