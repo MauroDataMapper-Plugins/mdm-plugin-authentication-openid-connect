@@ -31,21 +31,23 @@ import groovy.util.logging.Slf4j
 @Rollback
 class DiscoveryDocumentServiceSpec extends BaseIntegrationSpec {
 
+    public static final KEYCLOAK_BASE_URL = 'http://localhost:8090'
+
     DiscoveryDocumentService discoveryDocumentService
 
     void 'test get keycloak discovery document'(){
         when:
-        Map<String, Object> dd = discoveryDocumentService.loadDiscoveryDocumentMapFromUrl('https://jenkins.cs.ox.ac.uk/keycloak/realms/test/.well-known/openid-configuration')
+        Map<String, Object> dd = discoveryDocumentService.loadDiscoveryDocumentMapFromUrl('http://localhost:8090/realms/test/.well-known/openid-configuration')
 
         then:
         dd
         dd.size() == 54
-        dd.issuer == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test'
-        dd.authorization_endpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/auth'
-        dd.token_endpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/token'
-        dd.userinfo_endpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/userinfo'
-        dd.end_session_endpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/logout'
-        dd.jwks_uri == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/certs'
+        dd.issuer == "$KEYCLOAK_BASE_URL/realms/test"
+        dd.authorization_endpoint == "$KEYCLOAK_BASE_URL/realms/test/protocol/openid-connect/auth"
+        dd.token_endpoint == "$KEYCLOAK_BASE_URL/realms/test/protocol/openid-connect/token"
+        dd.userinfo_endpoint == "$KEYCLOAK_BASE_URL/realms/test/protocol/openid-connect/userinfo"
+        dd.end_session_endpoint == "$KEYCLOAK_BASE_URL/realms/test/protocol/openid-connect/logout"
+        dd.jwks_uri == "$KEYCLOAK_BASE_URL/realms/test/protocol/openid-connect/certs"
     }
 
     void 'test get microsoft discovery document'(){
@@ -81,18 +83,18 @@ class DiscoveryDocumentServiceSpec extends BaseIntegrationSpec {
 
     void 'test create discovery document'(){
         given:
-        Map<String, Object> dd = discoveryDocumentService.loadDiscoveryDocumentMapFromUrl('https://jenkins.cs.ox.ac.uk/keycloak/realms/test/.well-known/openid-configuration')
+        Map<String, Object> dd = discoveryDocumentService.loadDiscoveryDocumentMapFromUrl("$KEYCLOAK_BASE_URL/realms/test/.well-known/openid-configuration")
 
         when:
         DiscoveryDocument document = discoveryDocumentService.createDiscoveryDocument(dd)
 
         then:
-        document.issuer == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test'
-        document.authorizationEndpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/auth'
-        document.tokenEndpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/token'
-        document.userinfoEndpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/userinfo'
-        document.endSessionEndpoint == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/logout'
-        document.jwksUri == 'https://jenkins.cs.ox.ac.uk/keycloak/realms/test/protocol/openid-connect/certs'
+        document.issuer == "$KEYCLOAK_BASE_URL/realms/test"
+        document.authorizationEndpoint == "$KEYCLOAK_BASE_URL/realms/test/protocol/openid-connect/auth"
+        document.tokenEndpoint == "$KEYCLOAK_BASE_URL/realms/test/protocol/openid-connect/token"
+        document.userinfoEndpoint == "$KEYCLOAK_BASE_URL/realms/test/protocol/openid-connect/userinfo"
+        document.endSessionEndpoint == "$KEYCLOAK_BASE_URL/realms/test/protocol/openid-connect/logout"
+        document.jwksUri == "$KEYCLOAK_BASE_URL/realms/test/protocol/openid-connect/certs"
     }
 
     @Override

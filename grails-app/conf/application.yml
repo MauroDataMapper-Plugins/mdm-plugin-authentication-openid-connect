@@ -19,7 +19,7 @@ maurodatamapper:
             clientSecret: XBeb-cTftDQxGvW-KMfR0vKR
         keycloak:
             enabled: true
-            baseUrl: https://jenkins.cs.ox.ac.uk/keycloak
+            baseUrl: http://localhost:8090
             realm: 'test'
             clientId: mdm
             clientSecret: '4b3b7290-7629-4b88-b310-df256adc8fed'

@@ -265,13 +265,13 @@ class OpenidConnectAuthenticationFunctionalSpec extends BaseFunctionalSpec {
         verifyResponse(OK, response)
 
         when: 'check user has been created'
-        CatalogueUser user = getUser('keycloak-only@maurodatamapper.com')
+        CatalogueUser user = getUser('keycloak-only@maurodata.org')
 
         then:
         user
         user.firstName == 'keycloak-only'
         user.lastName == 'User'
-        user.createdBy == 'openidConnectAuthentication@jenkins.cs.ox.ac.uk'
+        user.createdBy == 'openidConnectAuthentication@maurodata.org'
     }
 
     void 'KEYCLOAK08 - test logging in with valid authentication code and altered max_age'() {
@@ -525,7 +525,7 @@ https://accounts.google.com/o/oauth2/v2/auth?scope=openid+email&response_type=co
         Map<String, String> authorizeResponse = [
             openidConnectProviderId: googleProvider.id.toString(),
             nonce                  : urlEncodedNonce,
-            redirect_uri           : 'https://jenkins.cs.ox.ac.uk',
+            redirect_uri           : 'http://localhost',
             state                  : '9329705d-3cd0-4a59-b588-a369d72aaeae',
             session_state          : '',
             code                   : '',
@@ -544,7 +544,7 @@ https://accounts.google.com/o/oauth2/v2/auth?scope=openid+email&response_type=co
         user
         user.firstName == 'Ollie'
         user.lastName == 'Freeman'
-        user.createdBy == 'openidConnectAuthentication@jenkins.cs.ox.ac.uk'
+        user.createdBy == 'openidConnectAuthentication@maurodata.org'
     }
 
     @Ignore('Manual testing only')
@@ -579,7 +579,7 @@ https://login.microsoftonline.com/bc88d555-3533-4d23-a99b-9f034c0fe6fe/oauth2/v2
         Map<String, String> authorizeResponse = [
             openidConnectProviderId: azureProvider.id.toString(),
             nonce                  : new String(nonce),
-            redirect_uri           : 'https://jenkins.cs.ox.ac.uk',
+            redirect_uri           : 'http://localhost',
             state                  : '402d42f8-56fc-46f3-b6c2-4303fdaff689',
             session_state          : '71ec1bf4-b1ce-4ccf-8f6a-eb0b60580f4a',
             code                   : '0.AS8AVdWIvDM1I02pm58DTA_m_nPPpwahwMxOm2oQ84kzFSUvAKc.AQABAAIAAAD--DLA3VO7QrddgJg7WevrMx59GcOKw2uCwZl9KNPM4BXQPsJ6oP2G8TucnveJhWiLMk0LGyrnp5a8xO_GmPdPDWvipbbEQu8Z07lvkhq0XtJ1ztVUP3wvDjtNm2R828_Mo1CxJmBHEDl768EZzRoE2B8wrXrAZPt_b9_CKRAOZAV8nJQOF2Xl3DlHvjNB9xu4yiNCkou-51JfkS5mieUhvr7Ptk9rFxaje4FC5x0CDvO6TlsY7AVGZIthUd6I5f3DE04TaYDskHsRi3DQ6K9Rfm6BhwJQ7-g-BUfW6AVKawspAhtLMgLvD-v14EF2J5qdjjSIeoKlDdyA-sDitVSbDpgEeL2yRaE0ufdDmMeC1kRjyWNYdPSUCsAYXBhusRPutgxe96NGiBkIpVR7c8tlPp_FMsF_j1jFddMqE-hOBSXR-2OotVA4RGdlZ2ILTvOPeGlU_huxfKtrjf8sgDzz1emdPToiwYG77kKImzd8ZbXjaIyspUv0TuMUnCLcYzE8NGYCFHSP91hX65mFMW6YIkT8dNY43VKiJOKepxJPEAyB9DVTECy1fPJGqj1mFbq_ocNPbBdw0ar42Tca8hB1I2vMuWSRYJvsjedUct51aE_ouuVz4V4uCY6xBVXNMcYoR2tdYrcK1xTVeXU023mH1fy9AWyglUeku9h_hUJMPSVfSv-gM1ovCkXm1z34YAJv-Sg3tzOuRrCRdEz_I8gWC2cs6c8Hiw5mpPtBIrY9rem_t_S4QLbC5b0iu6-M77nuAELbA2MHBrMuwmigpAQ4ljxdJogHR_Y4UJn9VE3Xtw2DBh5ZJtoURiPdTk2vdqDaqSCmJ4KsduhWjt8dwdih5bdLAYXiC8gBSfFZybES1YKabwRhv9bPPHelCCbxaWAg2SwIyVDCv4HFV_RShxvbdDdcxG0oDbsvq9oDZNtZiN7NB6gkG0KzrvuCgWBU5LH2kXkcM1Nw8Tm-fkeid7BMRkkN8z1AUzmdB2uwilycaRmFfXCVU9bA_RSQN4mzCW66PszLLVdRO7k5dKI3EnRm62NbdeU5hVStXtOgrva53b7cGYMpfmdJ84TbB-4IPpMQcWHtimm-r0vvyipwwxQLQS3f4jcZyvBRRO4UbOjYvsIAvtEaeDNaeeO4IG4uS-QvQi5jTgVyWy1Aqxot9iiZUngSJRFJ85UvY9XpaovZkPDZP04kwtqXfhEHhxcwcl3ctv8PcA8nBihRTBwm546VqUd-CdQtwz8um7lG6pYZPwHL7ObWYYYpn4HxmQimbzkgAA',
@@ -646,7 +646,7 @@ https://login.microsoftonline.com/bc88d555-3533-4d23-a99b-9f034c0fe6fe/oauth2/v2
         Map<String, String> authorizeParameters = authoriseEndpoint.toURL().query.split('&').collectEntries {it.split('=')}
 
         // Pull out the nonce
-        String redirectUrl = "https://jenkins.cs.ox.ac.uk"
+        String redirectUrl = "http://localhost:4200"
         String authoriseEndpointWithRedirect = "${authoriseEndpoint}&redirect_uri=${URLEncoder.encode(redirectUrl, 'UTF-8')}"
 
         Connection authoriseConnection = Jsoup.connect(authoriseEndpointWithRedirect)
@@ -666,7 +666,7 @@ https://login.microsoftonline.com/bc88d555-3533-4d23-a99b-9f034c0fe6fe/oauth2/v2
             code                   : code,
             session_state          : sessionState,
             state                  : state,
-            redirect_uri           : 'https://jenkins.cs.ox.ac.uk',
+            redirect_uri           : 'http://localhost',
             nonce                  : nonce
         ]
     }
