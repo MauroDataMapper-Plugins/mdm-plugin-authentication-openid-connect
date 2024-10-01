@@ -27,6 +27,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException
 import com.auth0.jwt.interfaces.DecodedJWT
 import grails.gorm.transactions.Transactional
 import groovy.util.logging.Slf4j
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException
 
 @Slf4j
 @Transactional
@@ -66,7 +67,12 @@ class OpenidConnectTokenService {
         if (!openidConnectToken.validate()) {
             throw new ApiInvalidModelException('OCTSS02', 'Could not update and store openid connect token', openidConnectToken.errors)
         }
-        openidConnectToken.save(validate: false, flush: true)
+        try {
+            openidConnectToken.save(validate: false, flush: true)
+        } catch (HibernateOptimisticLockingFailureException hibernateOptimisticLockingFailureException) {
+            // if the token refresh update is stale, another thread has probably refreshed at the same time
+            log.warn 'Ignored HibernateOptimisticLockingFailureException on OpenidConnectTokenService.validateAndSave', hibernateOptimisticLockingFailureException
+        }
     }
 
     boolean verifyIdToken(OpenidConnectToken token, String lastKnownSessionState) {
