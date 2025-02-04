@@ -50,7 +50,7 @@ class OpenidConnectProvider implements MdmDomain {
         discoveryDocumentUrl blank: false, nullable: true, validator: {val, obj ->
             {
                 if (obj.standardProvider && !val) return ['default.null.message']
-                if (val && !(new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS).isValid(val))) return ['default.invalid.url.message']
+                if (val && !(new UrlValidator(UrlValidator.ALLOW_LOCAL_URLS+UrlValidator.ALLOW_ALL_SCHEMES).isValid(val))) return ['default.invalid.url.message']
             }
         }
         clientId blank: false
