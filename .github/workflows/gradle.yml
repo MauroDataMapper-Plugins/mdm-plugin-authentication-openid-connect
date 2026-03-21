@@ -79,7 +79,7 @@ jobs:
       run: ./gradlew  test --no-daemon --stacktrace -Duser.language=en -Duser.country=GB
 
     - name: Unit Test Report
-      uses: dorny/test-reporter@v1
+      uses: dorny/test-reporter@v3
       if: success() || failure()
       with:
         name: Unit Test Results
@@ -99,7 +99,7 @@ jobs:
         ./gradlew integrationTest
 
     - name: Integration Test Report
-      uses: dorny/test-reporter@v1
+      uses: dorny/test-reporter@v3
       if: success() || failure()
       with:
         name: Integration Test Results
